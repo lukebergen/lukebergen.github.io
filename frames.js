@@ -1,0 +1,1 @@
+window.fp_ms=.06;window.t1=0;window.t2=0;window.turn=1;window.doit=function(n,w,t){var o,i;window["t"+[window.turn]]=Date.now();window.turn+=1;if(window.turn===3){i=window.t2-window.t1;o=Math.floor(i*window.fp_ms);alert("frames: "+o);return window.turn=1}else{return window.turn=2}};window.startItUp=function(){return document.addEventListener("keypress",window.doit)};
