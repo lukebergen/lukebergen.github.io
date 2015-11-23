@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <script src="reaction.js"></script>
+    <link rel="stylesheet" href="reaction.css"></link>
+  </head>
+  <body>
+    <div class="instructions">
+      <div>This is how this works, input some characters below and hit start.</div>
+      <div>You'll have a couple of seconds to get ready, then 10 letters will come by at random intervals. Press the key as quickly as possible.</div>
+      <div>If you press the wrong key, you'll be penalized a half second so be accurate!</div>
+    </div>
+    <div>
+      <label>Letters that you want come up for reaction (comma separated):</label>
+      <input id="letters">
+    </div>
+    <div>
+      <button id="start-button">Start</button>
+    </div>
+    <div>
+      <h2 id="react-to-this"></h2>
+    </div>
+    <div>
+      <ul id="results">
+      </ul>
+      <div id="average-result"></div>
+    </div>
+  </body>
+</html>
