@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script src="canvas-generation.js"></script>
+    <style>
+      canvas { border-style: solid; border-width: 1px; width: 256px; }
+      input { margin-top: 10px; width: 256px; }
+      .graph { display: inline-block; margin: 20px; }
+    </style>
+  </head>
+  <body onload="load()">
+    <div id="header">
+      <p>Select your favorite 4 to move on to the next round.</p>
+      <p id="generationCount" data-count="0"></p>
+    </div>
+    <div id="container"></div>
+  </body>
+</html>
