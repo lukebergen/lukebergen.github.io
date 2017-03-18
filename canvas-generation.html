@@ -1,17 +1,17 @@
 <html>
   <head>
-    <script src="canvas-generation.js"></script>
+    <script src="https://fb.me/react-0.14.3.js"></script>
+    <script src="https://fb.me/react-dom-0.14.3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script type="text/babel" src="canvas-generation.js"></script>
     <style>
       canvas { border-style: solid; border-width: 1px; width: 256px; }
       input { margin-top: 10px; width: 256px; }
       .graph { display: inline-block; margin: 20px; }
     </style>
   </head>
-  <body onload="load()">
-    <div id="header">
-      <p>Select your favorite 4 to move on to the next round.</p>
-      <p id="generationCount" data-count="0"></p>
+  <body>
+    <div id="container">
     </div>
-    <div id="container"></div>
   </body>
 </html>

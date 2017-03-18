@@ -1,157 +1,264 @@
-window.maxWidth = 1280;
-window.maxHeight = 800;
+class Header extends React.Component {
+  render() {
+    return (
+      <div>
+        <p>Generation {this.props.generation}</p>
+        <p>Select which 4 you'd like to propogate into the next round.</p>
+      </div>
+    );
+  }
+};
 
-// Sometimes it's fun to hack and slash and create from a place of raw mania
-nextNum = function(min, max) {
-  if (min == max) { return min; }
-  var s = window.seed;
-  var c = window.currentPos;
+class Graph extends React.Component {
+  constructor(props) {
+    super(props);
 
-  var neededDigits = (max - min).toString().length;
-  var result = s.substr(c, neededDigits);
-  var randomOffsetAtReset = 0;
-  var howManyMoreWeNeeded = 0;
-
-  if (result.length < neededDigits) {
-    // Oops, we hit the end of the string. Go back to 0 and grab some more
-    howManyMoreWeNeed = neededDigits - result.length;
-    result += s.substr(0, howManyMoreWeNeed);
+    this.seedChange = this.seedChange.bind(this);
+    this.nextNum = this.nextNum.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
-  window.currentPos = (window.currentPos + neededDigits);
-  if (currentPos >= s.length) {
-    window.resets += 1;
-    if (window.resets >= s.length) { resets = 0; }
-    window.currentPos = howManyMoreWeNeeded + window.resets;
-  }
+  nextNum(min, max) {
+    if (min == max) { return min; }
+    let s = this.props.seed;
 
-  var clamped = (parseInt(result) % (max - min)) + min;
+    let neededDigits = (max - min).toString().length;
+    let result = s.substr(this.currentPos, neededDigits);
+    let randomOffsetAtReset = 0;
+    let howManyMoreWeNeeded = 0;
 
-  return clamped;
-}
-
-window.generate = function(el) {
-  window.seed = el.childNodes[4].value;
-  window.currentPos = 0;
-  window.resets  = 0;
-
-  var c = el.childNodes[1];
-  var ctx = c.getContext("2d");
-  ctx.clearRect(0, 0, c.width, c.height);
-
-  // now... based on all the numbers, render some lines/etc...
-  var paths = nextNum(2, 20);
-
-  var maxElementsPerStroke = nextNum(1, 6);
-  
-  var maxRadius = nextNum(1, window.maxWidth);
-
-  for (var i = 0; i < paths; i++) {
-
-    ctx.beginPath();
-
-    var pathElements = nextNum(1, maxElementsPerStroke);
-    for (var j = 0; j < pathElements; j++) {
-      nextMovement = nextNum(0, 5);
-
-      if (nextMovement == 0) {
-        // moveTo
-        ctx.moveTo(nextNum(0, window.maxWidth), nextNum(0, maxHeight));
-      } else if (nextMovement == 1) {
-        // lineTo
-        ctx.lineTo(nextNum(0, window.maxWidth), nextNum(0, window.maxHeight));
-      } else if (nextMovement == 2) {
-        // quadraticCurveTo
-        ctx.quadraticCurveTo(nextNum(0, window.maxWidth), nextNum(0, window.maxHeight), nextNum(0, window.maxWidth), nextNum(0, window.maxHeight));
-      } else if (nextMovement == 3) {
-        // bezierCurveTo
-        ctx.bezierCurveTo(nextNum(0, window.maxWidth), nextNum(0, window.maxHeight), nextNum(0, window.maxWidth), nextNum(0, window.maxHeight), nextNum(0, window.maxWidth), nextNum(0, window.maxHeight));
-      } else if (nextMovement == 4) {
-        // arcTo
-        ctx.arcTo(nextNum(0, window.maxWidth), nextNum(0, window.maxHeight), nextNum(0, window.maxWidth), nextNum(0, window.maxHeight), maxRadius)
-      } else {
-        // arc
-        var radius = nextNum(0, maxRadius);
-        var sAng = nextNum(0, 2000) / 1000;
-        var eAng = nextNum(0, 2000) / 1000;
-        ctx.arc(nextNum(0, window.maxWidth), nextNum(0, window.maxHeight), radius, sAng, eAng);
-      }
+    if (result.length < neededDigits) {
+      // Oops, we hit the end of the string. Go back to 0 and grab some more
+      let howManyMoreWeNeed = neededDigits - result.length;
+      result += s.substr(0, howManyMoreWeNeed);
     }
-    if (nextNum(1, 3) == 1) {
-      ctx.strokeStyle = "rgb(" + nextNum(0, 256) + "," + nextNum(0, 256) + "," + nextNum(0, 256) + ")";
-      ctx.stroke();
-    } else {
-      if (nextNum(1, 3) == 1) {
-        ctx.fillStyle = "rgb(" + nextNum(0, 256) + "," + nextNum(0, 256) + "," + nextNum(0, 256) + ")";
-      } else {
-        var grad = ctx.createLinearGradient(nextNum(0, window.maxWidth), nextNum(0, window.maxHeight), nextNum(0, window.maxWidth), nextNum(0, window.maxHeight));
-        var c1 = "rgb(" + nextNum(0, 256) + ", " + nextNum(0, 256) + ", " + nextNum(0, 256) + ")";
-        var c2 = "rgb(" + nextNum(0, 256) + ", " + nextNum(0, 256) + ", " + nextNum(0, 256) + ")";
-        grad.addColorStop(0, c1);
-        grad.addColorStop(1, c2);
-        ctx.fillStyle = grad
-      }
-      ctx.fill();
+
+    this.currentPos += neededDigits;
+    if (this.currentPos >= s.length) {
+      this.resets += 1;
+      if (this.resets >= s.length) { this.resets = 0; }
+      this.currentPos = howManyMoreWeNeeded + this.resets;
     }
+
+    let clamped = (parseInt(result) % (max - min)) + min;
+
+    return clamped;
   }
-}
 
-var seeds = ["328803219694576553799487", "324683377930997577044249", "704284818881641439211741", "484715551264457706997045", "683479111554748103931615", "679881600110736916623132", "854223829527196580480671", "073705495069927549354385", "636715733375447078288870", "931648916026950837930394", "741397409965209382574453", "226081107787308432432178"]
+  generate(ctx, height, width) {
+    let nn = this.nextNum;  // we use the crap out of it. Keep things short
+    ctx.clearRect(0, 0, width, height);
 
-var load = function() {
-  window.winners = [];
-  var container = document.getElementById("container");
-  container.innerHTML = "";
+    // now... based on all the numbers, render some lines/etc...
+    let paths = nn(2, 20);
 
-  var genCountEl = document.getElementById("generationCount");
-  var genCount = parseInt(genCountEl.getAttribute("data-count")) + 1;
-  genCountEl.setAttribute("data-count", genCount);
-  genCountEl.innerHTML = "Generation " + genCount;
+    let maxElementsPerStroke = nn(1, 6);
+    
+    let maxRadius = nn(1, this.props.width);
 
-  for (var i = 0 ; i < seeds.length ; i++) {
-    container.innerHTML += "<div id='canvas" + i + "' class='graph'> <canvas width='1280' height='800'></canvas><br> <input value='" + seeds[i] + "'></input> </div>";
-  }
-  for (var i = 0 ; i < seeds.length ; i++) {
-    var el = document.getElementById("canvas" + i);
-    window.generate(el);
+    for (let i = 0; i < paths; i++) {
 
-    el.childNodes[1].onclick = function(evt) {
-      var index = winners.indexOf(evt.target.parentNode.childNodes[4].value);
-      if (index >= 0) {
-        var style = "border: solid 1px";
-        winners.splice(index, 1);
-      } else {
-        var style = "border: solid blue";
-        winners.push(evt.target.parentNode.childNodes[4].value);
-      }
+      ctx.beginPath();
 
-      evt.target.style = style;
-      if (winners.length == 4) {
-        seeds = [];
-        for (var j = 0 ; j < 4 ; j++) {
-          for (var k = 0 ; k < 4 ; k++) {
-            if (j != k) {
-              seeds.push(combineMut(winners[j], winners[k]));
-            }
-          }
+      let pathElements = nn(1, maxElementsPerStroke);
+      for (let j = 0; j < pathElements; j++) {
+        let nextMovement = nn(0, 5);
+
+        if (nextMovement == 0) {
+          // moveTo
+          ctx.moveTo(nn(0, this.props.width), nn(0, this.props.height));
+        } else if (nextMovement == 1) {
+          // lineTo
+          ctx.lineTo(nn(0, this.props.width), nn(0, this.props.height));
+        } else if (nextMovement == 2) {
+          // quadraticCurveTo
+          ctx.quadraticCurveTo(nn(0, this.props.width), nn(0, this.props.height), nn(0, this.props.width), nn(0, this.props.height));
+        } else if (nextMovement == 3) {
+          // bezierCurveTo
+          ctx.bezierCurveTo(nn(0, this.props.width), nn(0, this.props.height), nn(0, this.props.width), nn(0, this.props.height), nn(0, this.props.width), nn(0, this.props.height));
+        } else if (nextMovement == 4) {
+          // arcTo
+          ctx.arcTo(nn(0, this.props.width), nn(0, this.props.height), nn(0, this.props.width), nn(0, this.props.height), maxRadius)
+        } else {
+          // arc
+          let radius = nn(0, maxRadius);
+          let sAng = nn(0, 2000) / 1000;
+          let eAng = nn(0, 2000) / 1000;
+          ctx.arc(nn(0, this.props.width), nn(0, this.props.height), radius, sAng, eAng);
         }
-        load();
+      }
+      if (nn(1, 3) == 1) {
+        ctx.strokeStyle = "rgb(" + nn(0, 256) + "," + nn(0, 256) + "," + nn(0, 256) + ")";
+        ctx.stroke();
+      } else {
+        if (nn(1, 3) == 1) {
+          ctx.fillStyle = "rgb(" + nn(0, 256) + "," + nn(0, 256) + "," + nn(0, 256) + ")";
+        } else {
+          let grad = ctx.createLinearGradient(nn(0, this.props.width), nn(0, this.props.height), nn(0, this.props.width), nn(0, this.props.height));
+          let c1 = "rgb(" + nn(0, 256) + ", " + nn(0, 256) + ", " + nn(0, 256) + ")";
+          let c2 = "rgb(" + nn(0, 256) + ", " + nn(0, 256) + ", " + nn(0, 256) + ")";
+          grad.addColorStop(0, c1);
+          grad.addColorStop(1, c2);
+          ctx.fillStyle = grad
+        }
+        ctx.fill();
       }
     }
   }
+
+  componentDidMount() {
+    this.regenerate();
+  }
+
+  componentDidUpdate() {
+    this.regenerate();
+  }
+
+  regenerate() {
+    let el = document.getElementById("canvas" + this.props.index);
+    let ctx = el.getContext("2d");
+    ctx.clearRect(0, 0, this.props.width, this.props.height);
+
+    this.currentPos = 0;
+    this.resets  = 0;
+
+    this.generate(ctx, el.width, el.height);
+  }
+
+  seedChange(evt) {
+    this.props.seedChange(this.props.index, evt.target.value);
+  }
+
+  onClick(evt) {
+    this.props.onClick(this.props.index);
+  }
+
+  render() {
+    let style = {border: "solid 1px"};
+    if (this.props.winners.indexOf(this.props.index) >= 0) {
+      style = {border: "solid 2px blue"};
+    }
+    return (
+      <div className="graph">
+        <canvas style={style} id={"canvas" + this.props.index} width="1280" height="800" onClick={this.onClick}></canvas><br />
+        <input key={this.props.index} value={this.props.seed} onChange={this.seedChange}></input>
+      </div>
+    );
+  }
 }
 
-var combineMut = function(p1, p2) {
-  var res = "";
-  for (var i = 0 ; i < p1.length ; i++) {
-    if (Math.random() >= 0.5) {
-      res += p1[i];
-    } else {
-      res += p2[i];
+class Graphs extends React.Component {
+  render() {
+    let graphs = [];
+    for (let i = 0 ; i < this.props.seeds.length ; i++) {
+      graphs.push(
+        <Graph key={i} index={i} width={1280} height={800} winners={this.props.winners} seed={this.props.seeds[i]} seedChange={this.props.seedChange} onClick={this.props.onClick} />
+      );
     }
-    if (Math.random() >= 0.1) {
-      res[res.length-1] = Math.round(Math.random() * 10);
-    }
+
+    return (
+      <div>
+        { graphs }
+      </div>
+    );
   }
-  return res;
-}
+};
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    let seeds = [];
+    for (let i = 0 ; i < 12 ; i++) {
+      let seed = (Math.random().toString().split(".")[1] + Math.random().toString().split(".")[1]).slice(0, 20); // get a whole lot of random to guarantee 20 digits
+      seeds.push(seed);
+    }
+    this.state = {generation: 0, seeds: seeds, winners: []};
+
+    this.seedChange = this.seedChange.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.nextGen = this.nextGen.bind(this);
+  }
+
+  nextGen(winningSeeds) {
+    let nextGen = [];
+    for (let i = 0 ; i < winningSeeds.length ; i++) {
+      for (let j = 0 ; j < winningSeeds.length ; j++) {
+        if (i != j) {
+          nextGen.push(this.mutate(this.beget(this.state.seeds[winningSeeds[i]], this.state.seeds[winningSeeds[j]])));
+        }
+      }
+    }
+    this.setState({seeds: nextGen, generation: this.state.generation+1, winners: []});
+
+    window.scrollTo(0, 0);
+  }
+
+  seedChange(index, newVal) {
+    let newSeeds = [];
+    for (let i = 0 ; i < this.state.seeds.length ; i++) {
+      if (i == index) {
+        newSeeds.push(newVal);
+      } else {
+        newSeeds.push(this.state.seeds[i]);
+      }
+    }
+
+    this.setState({seeds: newSeeds});
+  }
+
+  onClick(seedIndex) {
+    let winnerIndex = this.state.winners.indexOf(seedIndex);
+    let winners = this.state.winners.slice(0);
+    if (winnerIndex >= 0) {
+      winners.splice(winnerIndex, 1);
+    } else {
+      winners.push(seedIndex);
+    }
+
+    this.setState({winners: winners}, function() {
+      if (this.state.winners.length == 4) {
+        this.nextGen(this.state.winners);
+      }
+    });
+
+  }
+
+  beget(s1, s2) {
+    let result = "";
+    for (let i = 0 ; i < s1.length ; i++) {
+      if (Math.random() > 0.5) {
+        result += s1[i];
+      } else {
+        result += s2[i];
+      }
+    }
+    return result;
+  }
+
+  mutate(seed) {
+    let result = "";
+    for (let i = 0 ; i < seed.length ; i++) {
+      if (Math.random() > 0.1) {
+        result += seed[i];
+      } else {
+        result += Math.random().toString()[5];
+      }
+    }
+    return result;
+  }
+
+  render() {
+    return (
+      <div>
+        <Header generation={this.state.generation} />
+        <Graphs seeds={this.state.seeds} winners={this.state.winners} seedChange={this.seedChange} onClick={this.onClick} />
+      </div>
+    );
+  }
+};
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('container')
+);
