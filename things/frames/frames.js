@@ -9,7 +9,7 @@ window.doit = function(n, w, o) {
   if (window.turn === 3) {
     i = window.t2 - window.t1;
     t = Math.floor(i * window.fp_ms);
-    console.log("frames: " + t);
+    results.innerHTML = "<li>" + t + "</li>\n" + results.innerHTML;
     return window.turn = 1
   } else {
     return window.turn = 2
