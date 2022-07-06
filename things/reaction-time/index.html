@@ -1,28 +1,39 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <script src="reaction.js"></script>
     <link rel="stylesheet" href="reaction.css"></link>
   </head>
   <body>
-    <div class="instructions">
-      <div>This is how this works, input some characters below and hit start.</div>
-      <div>You'll have a couple of seconds to get ready, then 10 letters will come by at random intervals. Press the key as quickly as possible.</div>
-      <div>If you press the wrong key, you'll be penalized a half second so be accurate!</div>
+    <div id="instructions">
+      <p>This is how this works, input some characters below and hit start.</p>
+      <p>
+        You'll have a couple of seconds to get ready, then letters will start popping up. Click the letter that pops up as quickly as possible. But be careful. Pressing the wrong letter will dock you a half-second so accuracy counts. Press the spacebar to call it quits.
+      </p>
     </div>
-    <div>
-      <label>Letters that you want come up for reaction (comma separated):</label>
-      <input id="letters">
-    </div>
-    <div>
+    <div id="startup">
+      <div>
+        <label>Letters that you want come up for reaction:</label>
+        <input id="letters" value="fj">
+      </div>
       <button id="start-button">Start</button>
     </div>
-    <div>
-      <h2 id="react-to-this"></h2>
-    </div>
-    <div>
-      <ul id="results">
-      </ul>
-      <div id="average-result"></div>
+    <div id="readySet"></div>
+    <div id="playArea">
+      <div id="results">
+        <div id="rAverage">Average: <span id="average"></span></div>
+        <div id="rBest">Best: <span id="best"></span></div>
+        <div id="rWorst">Worst: <span id="worst"></span></div>
+        <div id="rWhiffs">Whiffs: <span id="whiffs"></span></div>
+        <div>
+          Individual times...
+          <ul id="allResults">
+          </ul>
+        </div>
+      </div>
+      <div id="letterSpace">
+        <div id="nextLetter"></div>
+      </div>
     </div>
   </body>
 </html>

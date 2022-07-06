@@ -1,1 +1,23 @@
-.instructions{margin:20px 0}#react-to-this{position:fixed}
+#instructions {
+  margin:20px 0;
+}
+
+#startup {
+  margin: 20px 0;
+}
+
+#playArea {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+
+#results {
+}
+
+#letterSpace {
+}
+
+#nextLetter {
+  font-size: 24px;
+  position: relative;
+}
