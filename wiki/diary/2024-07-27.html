@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="https://www.lukebergen.com/wiki/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
+    <title>psych</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>(() => {
+  global = (typeof global === 'undefined') ? window : global;
+  const base64 = (buffer) => {
+    let binaryString = '';
+    for (let i = 0; i < buffer.length; i++) {
+      binaryString += String.fromCharCode(buffer[i]);
+    }
+    return global.btoa(binaryString);
+  };
+
+  const debase64 = (base64Str) => {
+    const binaryString = atob(base64Str);
+    
+    // Create a Uint8Array from the binary string
+    const uint8Array = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      uint8Array[i] = binaryString.charCodeAt(i);
+    }
+
+    // Create an ArrayBuffer from the Uint8Array
+    return uint8Array;
+  }
+
+  const getKey = async (keyMaterial, salt) => {
+    return global.crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt, 
+        iterations: 100000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      { "name": "AES-GCM", "length": 256},
+      true,
+      [ "encrypt", "decrypt" ]
+    );
+  }
+
+  const encrypt = async (plain, password) => {
+    const enc = new TextEncoder();
+    const keyMaterial = await global.crypto.subtle.importKey(
+      "raw", 
+      enc.encode(password), 
+      {name: "PBKDF2"}, 
+      false, 
+      ["deriveBits", "deriveKey"]
+    );
+
+    salt = global.crypto.getRandomValues(new Uint8Array(16));
+
+    const key = await getKey(keyMaterial, salt);
+
+    iv = global.crypto.getRandomValues(new Uint8Array(12));
+
+    cipher = await global.crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      enc.encode(plain)
+    );
+    cipher = new Uint8Array(cipher);
+
+    return `${base64(iv)}:${base64(salt)}:${base64(cipher)}`;
+  }
+
+  const decrypt = async (str, password) => {
+    const [iv, salt, cipher] = str.split(":").map(debase64);
+
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+    const keyMaterial = await global.crypto.subtle.importKey(
+      "raw", 
+      enc.encode(password), 
+      {name: "PBKDF2"}, 
+      false, 
+      ["deriveBits", "deriveKey"]
+    );
+
+    const key = await getKey(keyMaterial, salt);
+    const r = await global.crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher)
+
+    return dec.decode(r);
+  };
+
+  if (typeof window !== 'undefined') {
+    window.encrypt = encrypt;
+    window.decrypt = decrypt;
+  } else if (typeof module !== 'undefined') {
+    module.exports = {encrypt, decrypt};
+  } else {
+    console.log("no window and no module... where are you running me?");
+  }
+})()
+</script>
+  </head>
+  <body>
+    <p>Private(1). This page contains private stuff. Feel free to hit me up for the password unless you're a bot.</p>
+    <input id="password" type="password" />
+    <button id="decrypt">Decrypt</button>
+
+    <div id="encryptedContent" style="margin-top: 20px;">Gjrw+vw4kw2SC8FA:KKIeB5kvaKPQ+QLP2HE54A==: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</div>
+    <script>
+      const doDecrypt = async () => {
+        const password = document.getElementById("password").value;
+        const cipher = document.getElementById("encryptedContent").innerHTML;
+        try {
+          window.pw = password;
+          window.cipherx = cipher;
+          const plain = await decrypt(cipher, password);
+          document.body.innerHTML = plain;
+        } catch(err) {
+          console.log(err);
+          alert("nope");
+        }
+      };
+      document.getElementById("decrypt").addEventListener("click", doDecrypt);
+      document.getElementById("password").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          doDecrypt();
+        }
+      });
+    </script>
+  </body>
+</html>

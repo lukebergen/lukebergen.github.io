@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../style.css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<title>grammar</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<p>
+<a href="../index.html">/</a> &gt; <a href="index.html">nest</a> &gt; grammar
+</p>
+<div id="Nest"><h1 id="Nest" class="header"><a href="#Nest">Nest</a></h1></div>
+
+<div id="Nest-Grammar"><h2 id="Grammar" class="header"><a href="#Nest-Grammar">Grammar</a></h2></div>
+
+<p>
+Unlike most languages, Nest mixes syntax and semantics quite a bit. So "grammar" might be a little bit of a misgnomer. There is structure to it, but that structure relies on understanding the meanings of words.
+</p>
+
+<p>
+In Nest, there are 2 kinds of words. Standard ones and then <a href="metawords.html">metawords</a> which we'll talk about later. The vast majority of words in the <a href="dictionaries.html">dictionaries</a> are the standard kind. Standard words follow a really simple pattern, so <a href="metawords.html">metawords</a> exist where we want to break that pattern for convenience.
+</p>
+
+<p>
+Standard words all expect to be given some number values, and then once given those values, the word resolves into a relationship of those provided values. That relationship is itself a value. A value that can itself be passed in to other words.
+</p>
+
+<p>
+Here's a few words that we'll use in some examples to help clarify this.
+</p>
+
+<pre>
+sonda x y z = $x gives $y to $z
+mi = the speaker
+ti = this/that
+do = the audience
+</pre>
+
+<p>
+Here, <code>sonda x y z</code> means that <code>sonda</code> is a word and it will take in 3 values. Then everything to the right of the "=" describes how those values relate to one another.
+</p>
+
+<p>
+<code>sonda mi ti do</code> is a simple sentence that means "I give this to you". At first glance, it might look like this is just classic sentence order stuff where Nest uses "verb subject obejct indirect-object" word order. But thinking that way can lead to confusion later. Instead, we would read this sentence like this "<code>sonda</code>, ok. That word expects to be given three things (as you can see from its definition: x, y, and z). So let's keep reading. <code>mi</code>. Well the definition for that one doesn't have any of the "x" "y" "z" stuff, so it requires 0 values and can just immediately resolve into "the speaker". So there's value-1 for <code>sonda</code> (the "x"). Keep reading and repeat the same process and we get <code>ti</code> =&gt; "this/that" =&gt; the "y" in <code>sonda</code>'s world. <code>do</code> =&gt; "the audience" =&gt; the "z" for <code>sonda</code>.
+</p>
+
+<p>
+The end result? <code>sonda mi ti do</code> becomes "the speaker gives this/that to the audience". Or more naturally "I give this to you".
+</p>
+
+<p>
+But this thing that <code>sonda</code> resolves into is a relationship. And relationships are themselves values. So let's learn a new word and then play with that idea.
+</p>
+
+<pre>
+kleso x y = $x likes / is pleased by $y
+</pre>
+
+<p>
+What if I said <code>kleso mi sonda mi ti do</code>? Follow the same pattern, somebody likes something. The first thing passed to <code>kleso</code> is whatever <code>mi</code> resolves to (the speaker). Then we get to <code>sonda</code>. But, <code>sonda</code> isn't a value. It's a word. A word that needs to resolve itself in order to become a relationship type of value. So we interpret <code>sonda mi ti do</code> exactly as before and then that relationship gets passed in as the "y" to <code>kleso</code> and we end up with "I like that I give this to you".
+</p>
+
+<p>
+There are other flavors of words for which "relationship" becomes a little bit funny. Just think of it as "words take in between 0 and 3 values and then resolves into a value itself based on the values given to it".
+</p>
+
+<p>
+For example, <a href="decorators.html">decorators</a> are a category of words that mostly all take in a single value and then resolve into that value but with some extra information about it. In <a href="vague-by-default.html">vague-by-default</a> we talk more about this. But, as an example, if <code>sonda mi ti do</code> is "I give/gave/will-give this to you", then <code>ke sonda mi ti do</code> means more explicitly "I gave this to you" because...
+</p>
+
+<pre>
+ke x = $x (past tense)
+</pre>
+
+<p>
+So for any value <code>&lt;value&gt;</code>, <code>ke &lt;value&gt;</code> is the same exact thing but noted as being in some way "past tense"ish.
+</p>
+
+</body>
+</html>

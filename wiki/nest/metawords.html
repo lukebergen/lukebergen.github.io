@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../style.css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<title>metawords</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<p>
+<a href="../index.html">/</a> &gt; <a href="index.html">nest</a> &gt; metawords
+</p>
+<div id="Nest"><h1 id="Nest" class="header"><a href="#Nest">Nest</a></h1></div>
+
+<div id="Nest-Metawords"><h2 id="Metawords" class="header"><a href="#Nest-Metawords">Metawords</a></h2></div>
+
+<p>
+If you've read through <a href="grammar.html">grammar</a> then you understand this idea of words taking in values and then resolving into values which can then feed into other words and etc...
+</p>
+
+<p>
+There are a few cases where we don't want for a word to resolve into a value because we want to do something meta-linguistic like quoting text or saying something about the text itself without having it go off trying to turn into a value.
+</p>
+
+<p>
+For example, if I wanted to say "my name is Alice", we don't want to rely on listeners implicitly understanding that some words aren't really <em>words</em> like from a dictionary. They're more like labels. Enter <code>zu*</code>.
+</p>
+
+<pre>
+zu* x = "$x"
+</pre>
+
+<p>
+Whenever you see a definition like the above where the word ends with a "*" like that, know that we're defining a metaword and that usual rules get a little unusual. The right-hand side of the "=" will often just be text describing what the heck a reader should do if they encounter this word rather than the usual "relate the values to each other".
+</p>
+
+<p>
+Here the "x", "y", and "z" often refers to the unresolved words that follow rather than resolved ones. For example.
+</p>
+
+<ul>
+<li>
+Alice: She said zu hi (she said "hi")
+
+</ul>
+<p>
+Not... especially useful. Let's look at another one.
+</p>
+
+<pre>
+li* x = the thing named $x
+</pre>
+
+<ul>
+<li>
+Alice: <code>sonda mi ti li paul</code> (I gave this to Paul)
+
+</ul>
+<p>
+When we were using Englishy sentences sprinkled with Nest, this wasn't necessary since English readers would see "Paul" and know that we're not talking about the literal text 'Paul' or some word 'Paul' that has some meaning in a dictionary". Rather, "Paul" is a label that refers to something. <code>li paul</code> is a way to say "the thing we refer to by "paul".
+</p>
+
+<p>
+In this way, <code>li x</code> is very <em>very</em> similar to <a href="reference.html">reference</a>s. In fact, they are exactly the same thing. <code>ly</code> and <code>li ly</code> mean the same thing and could be used interchangably. They both refer to some thing labeled as "ly" that members of the conversation understand from shared <a href="context.html">context</a> what we're talking about.
+</p>
+
+</body>
+</html>

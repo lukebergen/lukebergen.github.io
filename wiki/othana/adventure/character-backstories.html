@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="https://www.lukebergen.com/wiki/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
+    <title>psych</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>(() => {
+  global = (typeof global === 'undefined') ? window : global;
+  const base64 = (buffer) => {
+    let binaryString = '';
+    for (let i = 0; i < buffer.length; i++) {
+      binaryString += String.fromCharCode(buffer[i]);
+    }
+    return global.btoa(binaryString);
+  };
+
+  const debase64 = (base64Str) => {
+    const binaryString = atob(base64Str);
+    
+    // Create a Uint8Array from the binary string
+    const uint8Array = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      uint8Array[i] = binaryString.charCodeAt(i);
+    }
+
+    // Create an ArrayBuffer from the Uint8Array
+    return uint8Array;
+  }
+
+  const getKey = async (keyMaterial, salt) => {
+    return global.crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt, 
+        iterations: 100000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      { "name": "AES-GCM", "length": 256},
+      true,
+      [ "encrypt", "decrypt" ]
+    );
+  }
+
+  const encrypt = async (plain, password) => {
+    const enc = new TextEncoder();
+    const keyMaterial = await global.crypto.subtle.importKey(
+      "raw", 
+      enc.encode(password), 
+      {name: "PBKDF2"}, 
+      false, 
+      ["deriveBits", "deriveKey"]
+    );
+
+    salt = global.crypto.getRandomValues(new Uint8Array(16));
+
+    const key = await getKey(keyMaterial, salt);
+
+    iv = global.crypto.getRandomValues(new Uint8Array(12));
+
+    cipher = await global.crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      enc.encode(plain)
+    );
+    cipher = new Uint8Array(cipher);
+
+    return `${base64(iv)}:${base64(salt)}:${base64(cipher)}`;
+  }
+
+  const decrypt = async (str, password) => {
+    const [iv, salt, cipher] = str.split(":").map(debase64);
+
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+    const keyMaterial = await global.crypto.subtle.importKey(
+      "raw", 
+      enc.encode(password), 
+      {name: "PBKDF2"}, 
+      false, 
+      ["deriveBits", "deriveKey"]
+    );
+
+    const key = await getKey(keyMaterial, salt);
+    const r = await global.crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher)
+
+    return dec.decode(r);
+  };
+
+  if (typeof window !== 'undefined') {
+    window.encrypt = encrypt;
+    window.decrypt = decrypt;
+  } else if (typeof module !== 'undefined') {
+    module.exports = {encrypt, decrypt};
+  } else {
+    console.log("no window and no module... where are you running me?");
+  }
+})()
+</script>
+  </head>
+  <body>
+    <p>Private(1). This page contains private stuff. Feel free to hit me up for the password unless you're a bot.</p>
+    <input id="password" type="password" />
+    <button id="decrypt">Decrypt</button>
+
+    <div id="encryptedContent" style="margin-top: 20px;">S01Jp3I+A05Dhgvy:vzJpzhCtMf/6/3q/jLLFnA==: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</div>
+    <script>
+      const doDecrypt = async () => {
+        const password = document.getElementById("password").value;
+        const cipher = document.getElementById("encryptedContent").innerHTML;
+        try {
+          window.pw = password;
+          window.cipherx = cipher;
+          const plain = await decrypt(cipher, password);
+          document.body.innerHTML = plain;
+        } catch(err) {
+          console.log(err);
+          alert("nope");
+        }
+      };
+      document.getElementById("decrypt").addEventListener("click", doDecrypt);
+      document.getElementById("password").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          doDecrypt();
+        }
+      });
+    </script>
+  </body>
+</html>

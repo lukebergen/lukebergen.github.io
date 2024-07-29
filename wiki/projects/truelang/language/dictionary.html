@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../../../style.css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.xml">
+<title>dictionary</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<p>
+<a href="../../../index.html">/</a> &gt; <a href="../../index.html">projects</a> &gt; <a href="../index.html">truelang</a> &gt; <a href="index.html">language</a> &gt; dictionary
+</p>
+<div id="Dictionary"><h1 id="Dictionary" class="header"><a href="#Dictionary">Dictionary</a></h1></div>
+
+<p>
+Todo: This file will be auto-generated based on dictionary.js
+</p>
+
+<div id="Dictionary-Command words"><h2 id="Command words" class="header"><a href="#Dictionary-Command words">Command words</a></h2></div>
+
+<p>
+<code>rinka</code> - when X do Y
+returns: command
+arguments: 2
+</p>
+<ul>
+<li>
+event
+
+<li>
+expression/command (open question)
+
+</ul>
+<p>
+Effect:
+  Registers a trigger of &lt;event&gt;. On &lt;event&gt; occurring, the expression/command executes.
+</p>
+
+<p>
+<code>zbasu</code> - create a X at location Y
+returns: command
+arguments: 2
+</p>
+<ul>
+<li>
+object
+
+<li>
+location
+
+</ul>
+<p>
+Effect:
+  Creates the object at the location
+</p>
+
+
+
+<div id="Dictionary-Event words"><h2 id="Event words" class="header"><a href="#Dictionary-Event words">Event words</a></h2></div>
+
+<p>
+<code>cabkla</code> - object enters area
+returns: event
+arguments: 2
+</p>
+<ul>
+<li>
+object
+
+<li>
+area
+
+</ul>
+<p>
+Effect:
+  Returns an event which fires when the object first enters the specified area.
+Notes:
+  This will not fire if the object is already within the area and then moves around. It only fires at the instant that the object transitions from being outside of the area to then being inside the area.
+</p>
+
+<div id="Dictionary-Location words"><h2 id="Location words" class="header"><a href="#Dictionary-Location words">Location words</a></h2></div>
+
+<div id="Dictionary-Area words"><h2 id="Area words" class="header"><a href="#Dictionary-Area words">Area words</a></h2></div>
+
+<div id="Dictionary-Object words"><h2 id="Object words" class="header"><a href="#Dictionary-Object words">Object words</a></h2></div>
+
+<div id="Dictionary-&quot;Magic&quot; words"><h2 id="&quot;Magic&quot; words" class="header"><a href="#Dictionary-&quot;Magic&quot; words">"Magic" words</a></h2></div>
+
+<p>
+<code>zo</code> - quote next
+returns: text
+arguments: N/A
+Effect:
+  Takes the next space-less word whatever it might be and returns it as a text
+</p>
+  
+<p>
+zo[C]a - quote until
+arguments: N/A
+Effect:
+  Takes words until it finds one that matches this one and returns the whole as a text
+  e.g. <code>chat mi zoka stuff and things zoba hah, see, that was b not k zoka foo</code>
+  In this example <code>chat</code> would receive 3 "tokens", the objectId of the speaker, a "text" and whatever comes back from executing "foo".
+</p>
+
+</body>
+</html>
