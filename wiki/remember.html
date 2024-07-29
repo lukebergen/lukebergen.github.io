@@ -1,168 +1,131 @@
 <!DOCTYPE html>
 <html>
-<head>
-<link rel="Stylesheet" type="text/css" href="style.css">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
-<title>remember</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="https://www.lukebergen.com/wiki/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
+    <title>psych</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>(() => {
+  global = (typeof global === 'undefined') ? window : global;
+  const base64 = (buffer) => {
+    let binaryString = '';
+    for (let i = 0; i < buffer.length; i++) {
+      binaryString += String.fromCharCode(buffer[i]);
+    }
+    return global.btoa(binaryString);
+  };
 
-<p>
-<a href="./index.html">/</a> &gt; remember
-</p>
-<div id="remember"><h1 id="remember" class="header"><a href="#remember">remember</a></h1></div>
+  const debase64 = (base64Str) => {
+    const binaryString = atob(base64Str);
+    
+    // Create a Uint8Array from the binary string
+    const uint8Array = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      uint8Array[i] = binaryString.charCodeAt(i);
+    }
 
-<div id="remember-books"><h3 id="books" class="header"><a href="#remember-books">books</a></h3></div>
+    // Create an ArrayBuffer from the Uint8Array
+    return uint8Array;
+  }
 
-<p>
-(mostly defunct and in a trello board at this point)
-</p>
+  const getKey = async (keyMaterial, salt) => {
+    return global.crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt, 
+        iterations: 100000,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      { "name": "AES-GCM", "length": 256},
+      true,
+      [ "encrypt", "decrypt" ]
+    );
+  }
 
-<ul>
-<li>
-House of Leaves - Mark Z. Danielewski
+  const encrypt = async (plain, password) => {
+    const enc = new TextEncoder();
+    const keyMaterial = await global.crypto.subtle.importKey(
+      "raw", 
+      enc.encode(password), 
+      {name: "PBKDF2"}, 
+      false, 
+      ["deriveBits", "deriveKey"]
+    );
 
-<li>
-Needful Things - Stephen King
+    salt = global.crypto.getRandomValues(new Uint8Array(16));
 
-<li>
-Influence: The psychology of Persuasion - Robert B Cialdini
+    const key = await getKey(keyMaterial, salt);
 
-<li>
-The End of Time: The Next Revolution in Our Understanding of the Universe - Dr Julian Barbour
+    iv = global.crypto.getRandomValues(new Uint8Array(12));
 
-<li>
-Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference - Judea Pearl
+    cipher = await global.crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      enc.encode(plain)
+    );
+    cipher = new Uint8Array(cipher);
 
-<li>
-Anything and everything by Greg Egan
+    return `${base64(iv)}:${base64(salt)}:${base64(cipher)}`;
+  }
 
-<li>
-The Social Animal
+  const decrypt = async (str, password) => {
+    const [iv, salt, cipher] = str.split(":").map(debase64);
 
-<li>
-Rain World
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+    const keyMaterial = await global.crypto.subtle.importKey(
+      "raw", 
+      enc.encode(password), 
+      {name: "PBKDF2"}, 
+      false, 
+      ["deriveBits", "deriveKey"]
+    );
 
-<li>
-Terry Pratchet (Diskworld)
+    const key = await getKey(keyMaterial, salt);
+    const r = await global.crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher)
 
-<li>
-V.E. Schwab (Villains series, Shades of Magic series)
+    return dec.decode(r);
+  };
 
-</ul>
-<p>
-games
-</p>
-<ul>
-<li>
-Solar Ash Kingdom
+  if (typeof window !== 'undefined') {
+    window.encrypt = encrypt;
+    window.decrypt = decrypt;
+  } else if (typeof module !== 'undefined') {
+    module.exports = {encrypt, decrypt};
+  } else {
+    console.log("no window and no module... where are you running me?");
+  }
+})()
+</script>
+  </head>
+  <body>
+    <p>Private(2). This page contains private stuff. Feel free to hit me up for the password unless you're a bot.</p>
+    <input id="password" type="password" />
+    <button id="decrypt">Decrypt</button>
 
-<li>
-Katana Zero
-
-<li>
-Scourgebringer
-
-<li>
-Indivisible ?
-
-</ul>
-<p>
-media
-</p>
-<ul>
-<li>
-The Dragon Prince
-
-<li>
-Always Sunny in Philadelphia
-
-<li>
-Schitt's Creek
-
-<li>
-Waiting for Guffman
-
-<li>
-Killing Eve
-
-<li>
-Oblivion - movie
-
-<li>
-Dark (German Netflix show)
-
-</ul>
-<p>
-blogs
-</p>
-<ul>
-<li>
-<a href="http://www.becomingminimalist.com/enjoying-life-in-the-slow-lane/">http://www.becomingminimalist.com/enjoying-life-in-the-slow-lane/</a>
-
-</ul>
-<p>
-Software/development stuff
-</p>
-<ul>
-<li>
-<a href="https://github.com/denoland/deno">https://github.com/denoland/deno</a>
-
-<li>
-<a href="https://svelte.dev/">https://svelte.dev/</a>
-
-</ul>
-<p>
-chicky gift ideas
-</p>
-<ul>
-<li>
-<a href="https://www.etsy.com/search?q=ceramic+ring+holder&amp;ref=auto-1&amp;as_prefix=ceramic+ring+">https://www.etsy.com/search?q=ceramic+ring+holder&amp;ref=auto-1&amp;as_prefix=ceramic+ring+</a>
-
-<li>
-Get salt rising bread shipped to me! Two loaves at a time. White and sliced, if they ask. I hate making phone calls so this is the easiest win for you.
-
-<ul>
-<li>
-<a href="https://m.facebook.com/giantfoodmart/photos/a.1673429652944801/2764294963858259/?type=3&amp;source=48">https://m.facebook.com/giantfoodmart/photos/a.1673429652944801/2764294963858259/?type=3&amp;source=48</a>
-
-</ul>
-<li>
-<a href="http://www.greenwichworkshop.com/details/default.asp?p=1520&amp;a=7&amp;t=1&amp;page=1&amp;detailtype=artist">http://www.greenwichworkshop.com/details/default.asp?p=1520&amp;a=7&amp;t=1&amp;page=1&amp;detailtype=artist</a>
-
-<li>
-Crooked media shirt
-
-<li>
-Great British Baking show (UK seasons 1&amp;2)
-
-<li>
-The Circle (UK seasons)
-
-<li>
-<a href="https://cottonbureau.com/products/friend-of-the-pod">friend of the pod shirt</a>
-
-<li>
-<a href="https://www.amazon.com/hz/wishlist/ls/2UT15XN0HBQLH/ref=cm_go_nav_hz">amazon: house stuff</a>
-
-<li>
-<a href="https://www.amazon.com/hz/wishlist/ls/GBTQOA0YS3EJ/ref=cm_go_nav_hz">games and book</a>
-
-<li>
-<a href="https://www.amazon.com/hz/wishlist/ls/3H7RKUSCXNB5K/ref=cm_go_nav_hz">general wishlist</a>
-
-<li>
-<a href="https://store.dftba.com/collections/mcelroy">https://store.dftba.com/collections/mcelroy</a>
-
-<li>
-<a href="https://mysteriouspackage.com/products/taako">https://mysteriouspackage.com/products/taako</a>
-
-<li>
-<a href="https://boardgamegeek.com/boardgame/96848/mage-knight-board-game">https://boardgamegeek.com/boardgame/96848/mage-knight-board-game</a>
-
-</ul>
-
-</body>
+    <div id="encryptedContent" style="margin-top: 20px;">P9eTXZQvQSTSguRJ:M7uGB7OXavjpU8mKlICaEg==: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</div>
+    <script>
+      const doDecrypt = async () => {
+        const password = document.getElementById("password").value;
+        const cipher = document.getElementById("encryptedContent").innerHTML;
+        try {
+          window.pw = password;
+          window.cipherx = cipher;
+          const plain = await decrypt(cipher, password);
+          document.body.innerHTML = plain;
+        } catch(err) {
+          console.log(err);
+          alert("nope");
+        }
+      };
+      document.getElementById("decrypt").addEventListener("click", doDecrypt);
+      document.getElementById("password").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          doDecrypt();
+        }
+      });
+    </script>
+  </body>
 </html>
