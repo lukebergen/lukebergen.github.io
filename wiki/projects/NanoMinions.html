@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="../style.css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<title>NanoMinions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<p>
+<a href="../index.html">/</a> &gt; <a href="index.html">projects</a> &gt; NanoMinions
+</p>
+<div id="NanoMinions (working title)"><h1 id="NanoMinions (working title)" class="header"><a href="#NanoMinions (working title)">NanoMinions (working title)</a></h1></div>
+
+<p>
+A cross between that Mario Mini-Land Mayhem and one of those falling sand games
+</p>
+
+<p>
+Levels are puzzles where some objective has to be met (kill all the baddies, bridge the gap, reach the star, etc...)
+</p>
+
+<p>
+Before going into a level, you assemble a team. You have limited resource points (RP). RPare consumed based on number of minions you send in where the cost per minion is dependent on how complex their behavior is.
+</p>
+
+<p>
+So for example, in a seek and destroy style level, you might go in with 2 minion types.
+</p>
+
+<ul>
+<li>
+seekers (cost per: 25)
+
+<ul>
+<li>
+(15 RP) trigger (on sense(baddy, 10), then ping("baddy-here", radius: 40))
+
+<li>
+(10 RP) default: move randomly with very high speed
+
+</ul>
+<li>
+destroyers (cost per: 115)
+
+<ul>
+<li>
+(105 RP) trigger (on sense(baddy, 5), then attack(baddy, 100)
+
+<li>
+(15 RP) trigger (on sense("baddy-here", 5), then seek(source of "baddy-here"))
+
+<li>
+(5 RP) default: move randomly with medium speed
+
+</ul>
+</ul>
+<p>
+And with 500 points to allocate, the player decides to go in with 10 seekers and 2 destroyers (though, on seeing that they've got 20 extra points to work, maybe they bump the radius of the ping a bit to try to get as close to 500 points).
+</p>
+
+<p>
+(Or something like that. All of that is subject to change as capabilities get sorted out)
+</p>
+
+<p>
+Once the team has been assembled, they start the level and all(?) of their minions are deployed to the level at random.
+</p>
+
+<p>
+So it's a puzzle/strategy game where the player assembles a hored of dumb little bots to accomplish some goal. And the challenge arises in trying to find the right balance between quantity and quality (the dumber you make your minions, the more of them you can have. So can you make a huge hored of really dumb minions. Or you could send in exactly 1 extremely capable one.
+</p>
+
+<div id="NanoMinions (working title)-capabilities"><h2 id="capabilities" class="header"><a href="#NanoMinions (working title)-capabilities">capabilities</a></h2></div>
+
+<ul>
+<li>
+on (trigger, action)
+
+<ul>
+<li>
+trigger: sense(thing, radius)
+
+<li>
+trigger: touch(thing)
+
+<li>
+trigger: default (when no other trigger fires, this one will)
+
+<li>
+etc...
+
+<li>
+action: seek(target, speed)
+
+<li>
+action: move(direction (or random))
+
+<li>
+action: attack(target, damage)
+
+<li>
+action: ping(label, radius) (creates a non-blocking object labeled "label" with the given radius)
+
+</ul>
+</ul>
+<div id="NanoMinions (working title)-thoughts/questions/ideas"><h2 id="thoughts/questions/ideas" class="header"><a href="#NanoMinions (working title)-thoughts/questions/ideas">thoughts/questions/ideas</a></h2></div>
+
+<p>
+For things like sense(baddy) do we want a labeling system so we can refer to that thing again later. e.g. on (sense(baddy:b), attack(b)). Like, a way to refer back to things from the trigger while in the action section.
+</p>
+
+</body>
+</html>
