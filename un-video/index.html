@@ -1,14 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="../main.css">
-  <title>Landing Page for UnVideo (TODO)</title>
-</head>
-<body>
-  <h2>UnVideo</h2>
-  <p>
-      TODO: Google requires landing, policy, and TOS pages. Need to make all 3. But just so there's a place to put that stuff later... Here's the landing page. <a href="/un-video/privacy-policy">here's the privacy policy</a>. And an air-tight <a href="/un-video/tos">TOS page</a>.
-  </p>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnVideo</title>
+  </head>
+  <body>
+    <h1>UnVideo (Proof of Concept)</h1>
+
+    <button id="authorize">Authorize</button>
+    <form id="captionForm" style="display:none;">
+      <input type="text" id="videoId" placeholder="Enter YouTube Video ID" required>
+      <button type="submit">Get Captions</button>
+    </form>
+    <div id="captions"></div>
+
+    <script>
+    const CLIENT_ID = '698953753492-om1l71j746im6f72rtqsnhseko8mkt4r.apps.googleusercontent.com';
+    const REDIRECT_URI = 'https://www.lukebergen.com/un-video';
+    const SCOPE = 'https://www.googleapis.com/auth/youtube.force-ssl';
+
+    let accessToken = '';
+
+    document.getElementById('authorize').addEventListener('click', oauthSignIn);
+    document.getElementById('captionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const videoId = document.getElementById('videoId').value;
+      getCaptions(videoId);
+    });
+
+    function oauthSignIn() {
+      const oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+      const form = document.createElement('form');
+      form.setAttribute('method', 'GET');
+      form.setAttribute('action', oauth2Endpoint);
+
+      const params = {
+        'client_id': CLIENT_ID,
+        'redirect_uri': REDIRECT_URI,
+        'response_type': 'token',
+        'scope': SCOPE,
+        'include_granted_scopes': 'true',
+        'state': 'pass-through-value'
+      };
+
+      for (const p in params) {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', p);
+        input.setAttribute('value', params[p]);
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+    window.onload = function() {
+      const hash = window.location.hash.substring(1);
+      const result = hash.split('&').reduce(function (result, item) {
+        const parts = item.split('=');
+        result[parts[0]] = parts[1];
+        return result;
+      }, {});
+
+      if (result.access_token) {
+        accessToken = result.access_token;
+        document.getElementById('authorize').style.display = 'none';
+        document.getElementById('captionForm').style.display = 'block';
+      }
+    };
+
+    function getCaptions(videoId) {
+      const captionsDiv = document.getElementById('captions');
+      captionsDiv.innerHTML = 'Loading...';
+
+      fetch(`https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.items && data.items.length > 0) {
+            const captionId = data.items[0].id;
+            return fetch(`https://www.googleapis.com/youtube/v3/captions/${captionId}`, {
+              headers: {
+                'Authorization': `Bearer ${accessToken}`
+              }
+            });
+          } else {
+            throw new Error('No captions found for this video');
+          }
+        })
+        .then(response => response.text())
+        .then(captionData => {
+          captionsDiv.innerHTML = captionData;
+        })
+        .catch(error => {
+          captionsDiv.innerHTML = `Error: ${error.message}`;
+        });
+    }
+    </script>
+  </body>
 </html>
