@@ -1,1 +1,1 @@
-Simple static site for lukebergen.com
+Simple static site for lukebergen.com.
