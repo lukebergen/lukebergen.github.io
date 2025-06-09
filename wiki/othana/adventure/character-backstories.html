@@ -1,143 +1,221 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="Stylesheet" type="text/css" href="https://www.lukebergen.com/wiki/style.css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
-    <title>psych</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>(() => {
-  global = (typeof global === 'undefined') ? window : global;
-  const base64 = (buffer) => {
-    let binaryString = '';
-    for (let i = 0; i < buffer.length; i++) {
-      binaryString += String.fromCharCode(buffer[i]);
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>character-backstories</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
     }
-    return global.btoa(binaryString);
-  };
-
-  const debase64 = (base64Str) => {
-    const binaryString = atob(base64Str);
-    
-    // Create a Uint8Array from the binary string
-    const uint8Array = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
     }
-
-    // Create an ArrayBuffer from the Uint8Array
-    return uint8Array;
-  }
-
-  const getKey = async (keyMaterial, salt) => {
-    return global.crypto.subtle.deriveKey(
-      {
-        name: "PBKDF2",
-        salt: salt, 
-        iterations: 100000,
-        hash: "SHA-256"
-      },
-      keyMaterial,
-      { "name": "AES-GCM", "length": 256},
-      true,
-      [ "encrypt", "decrypt" ]
-    );
-  }
-
-  const encrypt = async (plain, password) => {
-    const enc = new TextEncoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    salt = global.crypto.getRandomValues(new Uint8Array(16));
-
-    const key = await getKey(keyMaterial, salt);
-
-    iv = global.crypto.getRandomValues(new Uint8Array(12));
-
-    cipher = await global.crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
-      key,
-      enc.encode(plain)
-    );
-    cipher = new Uint8Array(cipher);
-
-    return `${base64(iv)}:${base64(salt)}:${base64(cipher)}`;
-  }
-
-  const decrypt = async (str, password) => {
-    const [iv, salt, cipher] = str.split(":").map(debase64);
-
-    const enc = new TextEncoder();
-    const dec = new TextDecoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    const key = await getKey(keyMaterial, salt);
-    const r = await global.crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher)
-
-    return dec.decode(r);
-  };
-
-  if (typeof window !== 'undefined') {
-    window.encrypt = encrypt;
-    window.decrypt = decrypt;
-  } else if (typeof module !== 'undefined') {
-    module.exports = {encrypt, decrypt};
-  } else {
-    console.log("no window and no module... where are you running me?");
-  }
-})()
-</script>
-  </head>
-  <body>
-    <p>Private(1). This page contains private stuff. Feel free to hit me up for the password unless you're a bot.</p>
-    <input id="password" type="password" />
-    <button id="decrypt">Decrypt</button>
-
-    <div id="encryptedContent" style="margin-top: 20px;">NRSQjZZDf1TrBkuq:TWrgJ6RmffiK5zuOcll9Vg==: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</div>
-    <script>
-      const doDecrypt = async () => {
-        const password = document.getElementById("password").value;
-        const cipher = document.getElementById("encryptedContent").innerHTML;
-        try {
-          const plain = await decrypt(cipher, password);
-          document.body.innerHTML = plain;
-          // it was legit, so save it
-        } catch(err) {
-          console.log(err);
-          alert("nope");
-          return;
-        }
-
-        const passwordsStr = window.localStorage.getItem("passwords") || "{}";
-        let passwords = JSON.parse(passwordsStr);
-        passwords["1"] = password;
-        window.localStorage.setItem("passwords", JSON.stringify(passwords));
-      };
-      document.getElementById("decrypt").addEventListener("click", doDecrypt);
-      document.getElementById("password").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          doDecrypt();
-        }
-      });
-
-      // initial page load
-      const passwordsStr = window.localStorage.getItem("passwords") || '{}';
-      const passwords = JSON.parse(passwordsStr);
-      if (passwords["1"]) {
-        document.getElementById("password").value = passwords["1"];
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
       }
-    </script>
-  </body>
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="backstories">backstories</h1>
+<p>:private-1:</p>
+<h2 id="juvens">Juvens</h2>
+<ul>
+<li>Juvens grew up in _ _ _, the son of poor fisherfolk. He always
+dreamed of following in the footsteps of the great Triton heroes—saving
+the poor landers from the monsters of the deep and towing them back to
+shore when their ships broke in open water.</li>
+<li>Growing up, he taught himself how to steal from other merchants and
+passing nobility to help support his family, often using his charm and
+wit to talk himself out of situations when he was caught.</li>
+<li>When he was seventeen, he went to an annual event in the hopes of
+being chosen to apprentice under one of the famed heroes. To his
+surprise, and the surprise of everyone around them, he was chosen by
+Nebuchadnezzar, one of the most famed and prestigious Triton
+heroes.</li>
+<li>They traveled together for several years with Juvens picking up what
+he could from Nebuchadnezzar, but the relationship was one-sided.
+Nebuchadnezzar was haughty, self-aggrandizing, and really just all
+around a dick to Juvens.</li>
+<li>About 6 months before meeting the party, the two of them went on a
+job together after getting word a massive ship was on fire and there
+were dozens of innocents onboard that needed saving.</li>
+<li>This and that went wrong during the mission and at one point
+Nebuchadnezzar was trapped under one of the masts with his signature
+weapon, a coral trident, knocked away. Juvens recovered the trident and
+had an opportunity to help Nebuchadnezzar get free, but fled with the
+weapon instead.</li>
+<li>Fearing what everyone back home would think, he’s stayed pretty
+distant from them, and Tritons in general, and eventually came across
+Marcus’ ship and the party he’s with now.</li>
+<li>His hope is that if he can make a name for himself as a great hero,
+no one will question or care what happened to Nebuchadnezzar</li>
+</ul>
+<h3 id="bits-to-emphasize">Bits to emphasize</h3>
+<ul>
+<li>Juvens grew up as a nobody</li>
+<li>Had a real piece of work as a mentor (a famous hero) and has no real
+idea if they’re alive or dead</li>
+<li>Juvens’ trident is the one he took from that mentor</li>
+<li>He’s actively avoiding Tritons / going back home</li>
+<li>Also, while there are limits to this, he has an odd fascination with
+bits of ancient tech and as a rogue that’s the stuff he’s gravitating to
+more—“the weird stuff that gives me tinglies”</li>
+</ul>
+<p>this is (obviously) just a first draft so if any bits dont make sense
+for the world or what you had in mind for Tritons I’m not married to it
+and we can adjust as needed</p>
+</body>
 </html>

@@ -1,83 +1,241 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-<link rel="Stylesheet" type="text/css" href="../style.css">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
-<title>grammar</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>grammar</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
 </head>
 <body>
-
-<p>
-<a href="../index.html">/</a> &gt; <a href="index.html">nest</a> &gt; grammar
-</p>
-<div id="Nest"><h1 id="Nest" class="header"><a href="#Nest">Nest</a></h1></div>
-
-<div id="Nest-Grammar"><h2 id="Grammar" class="header"><a href="#Nest-Grammar">Grammar</a></h2></div>
-
-<p>
-Unlike most languages, Nest mixes syntax and semantics quite a bit. So "grammar" might be a little bit of a misgnomer. There is structure to it, but that structure relies on understanding the meanings of words.
-</p>
-
-<p>
-In Nest, there are 2 kinds of words. Standard ones and then <a href="metawords.html">metawords</a> which we'll talk about later. The vast majority of words in the <a href="dictionaries.html">dictionaries</a> are the standard kind. Standard words follow a really simple pattern, so <a href="metawords.html">metawords</a> exist where we want to break that pattern for convenience.
-</p>
-
-<p>
-Standard words all expect to be given some number values, and then once given those values, the word resolves into a relationship of those provided values. That relationship is itself a value. A value that can itself be passed in to other words.
-</p>
-
-<p>
-Here's a few words that we'll use in some examples to help clarify this.
-</p>
-
-<pre>
-sonda x y z = $x gives $y to $z
-mi = the speaker
-ti = this/that
-do = the audience
-</pre>
-
-<p>
-Here, <code>sonda x y z</code> means that <code>sonda</code> is a word and it will take in 3 values. Then everything to the right of the "=" describes how those values relate to one another.
-</p>
-
-<p>
-<code>sonda mi ti do</code> is a simple sentence that means "I give this to you". At first glance, it might look like this is just classic sentence order stuff where Nest uses "verb subject obejct indirect-object" word order. But thinking that way can lead to confusion later. Instead, we would read this sentence like this "<code>sonda</code>, ok. That word expects to be given three things (as you can see from its definition: x, y, and z). So let's keep reading. <code>mi</code>. Well the definition for that one doesn't have any of the "x" "y" "z" stuff, so it requires 0 values and can just immediately resolve into "the speaker". So there's value-1 for <code>sonda</code> (the "x"). Keep reading and repeat the same process and we get <code>ti</code> =&gt; "this/that" =&gt; the "y" in <code>sonda</code>'s world. <code>do</code> =&gt; "the audience" =&gt; the "z" for <code>sonda</code>.
-</p>
-
-<p>
-The end result? <code>sonda mi ti do</code> becomes "the speaker gives this/that to the audience". Or more naturally "I give this to you".
-</p>
-
-<p>
-But this thing that <code>sonda</code> resolves into is a relationship. And relationships are themselves values. So let's learn a new word and then play with that idea.
-</p>
-
-<pre>
-kleso x y = $x likes / is pleased by $y
-</pre>
-
-<p>
-What if I said <code>kleso mi sonda mi ti do</code>? Follow the same pattern, somebody likes something. The first thing passed to <code>kleso</code> is whatever <code>mi</code> resolves to (the speaker). Then we get to <code>sonda</code>. But, <code>sonda</code> isn't a value. It's a word. A word that needs to resolve itself in order to become a relationship type of value. So we interpret <code>sonda mi ti do</code> exactly as before and then that relationship gets passed in as the "y" to <code>kleso</code> and we end up with "I like that I give this to you".
-</p>
-
-<p>
-There are other flavors of words for which "relationship" becomes a little bit funny. Just think of it as "words take in between 0 and 3 values and then resolves into a value itself based on the values given to it".
-</p>
-
-<p>
-For example, <a href="decorators.html">decorators</a> are a category of words that mostly all take in a single value and then resolve into that value but with some extra information about it. In <a href="vague-by-default.html">vague-by-default</a> we talk more about this. But, as an example, if <code>sonda mi ti do</code> is "I give/gave/will-give this to you", then <code>ke sonda mi ti do</code> means more explicitly "I gave this to you" because...
-</p>
-
-<pre>
-ke x = $x (past tense)
-</pre>
-
-<p>
-So for any value <code>&lt;value&gt;</code>, <code>ke &lt;value&gt;</code> is the same exact thing but noted as being in some way "past tense"ish.
-</p>
-
+<h1 id="nest">Nest</h1>
+<h2 id="grammar">Grammar</h2>
+<p>Unlike most languages, Nest mixes syntax and semantics quite a bit.
+So “grammar” might be a little bit of a misgnomer. There is structure to
+it, but that structure relies on understanding the meanings of
+words.</p>
+<p>In Nest, there are 2 kinds of words. Standard ones and then <a
+href="metawords">metawords</a> which we’ll talk about later. The vast
+majority of words in the <a href="dictionaries">dictionaries</a> are the
+standard kind. Standard words follow a really simple pattern, so <a
+href="metawords">metawords</a> exist where we want to break that pattern
+for convenience.</p>
+<p>Standard words all expect to be given some number values, and then
+once given those values, the word resolves into a relationship of those
+provided values. That relationship is itself a value. A value that can
+itself be passed in to other words.</p>
+<p>Here’s a few words that we’ll use in some examples to help clarify
+this.</p>
+<p>sonda x y z = $x gives $y to $z mi = the speaker ti = this/that do =
+the audience</p>
+<p>Here, <code>sonda x y z</code> means that <code>sonda</code> is a
+word and it will take in 3 values. Then everything to the right of the
+“=” describes how those values relate to one another.</p>
+<p><code>sonda mi ti do</code> is a simple sentence that means “I give
+this to you”. At first glance, it might look like this is just classic
+sentence order stuff where Nest uses “verb subject obejct
+indirect-object” word order. But thinking that way can lead to confusion
+later. Instead, we would read this sentence like this
+“<code>sonda</code>, ok. That word expects to be given three things (as
+you can see from its definition: x, y, and z). So let’s keep reading.
+<code>mi</code>. Well the definition for that one doesn’t have any of
+the”x” “y” “z” stuff, so it requires 0 values and can just immediately
+resolve into “the speaker”. So there’s value-1 for <code>sonda</code>
+(the “x”). Keep reading and repeat the same process and we get
+<code>ti</code> =&gt; “this/that” =&gt; the “y” in <code>sonda</code>’s
+world. <code>do</code> =&gt; “the audience” =&gt; the “z” for
+<code>sonda</code>.</p>
+<p>The end result? <code>sonda mi ti do</code> becomes “the speaker
+gives this/that to the audience”. Or more naturally “I give this to
+you”.</p>
+<p>But this thing that <code>sonda</code> resolves into is a
+relationship. And relationships are themselves values. So let’s learn a
+new word and then play with that idea.</p>
+<p>kleso x y = $x likes / is pleased by $y</p>
+<p>What if I said <code>kleso mi sonda mi ti do</code>? Follow the same
+pattern, somebody likes something. The first thing passed to
+<code>kleso</code> is whatever <code>mi</code> resolves to (the
+speaker). Then we get to <code>sonda</code>. But, <code>sonda</code>
+isn’t a value. It’s a word. A word that needs to resolve itself in order
+to become a relationship type of value. So we interpret
+<code>sonda mi ti do</code> exactly as before and then that relationship
+gets passed in as the “y” to <code>kleso</code> and we end up with “I
+like that I give this to you”.</p>
+<p>There are other flavors of words for which “relationship” becomes a
+little bit funny. Just think of it as “words take in between 0 and 3
+values and then resolves into a value itself based on the values given
+to it”.</p>
+<p>For example, <a href="decorators">decorators</a> are a category of
+words that mostly all take in a single value and then resolve into that
+value but with some extra information about it. In <a
+href="vague-by-default">vague-by-default</a> we talk more about this.
+But, as an example, if <code>sonda mi ti do</code> is “I
+give/gave/will-give this to you”, then <code>ke sonda mi ti do</code>
+means more explicitly “I gave this to you” because…</p>
+<p>ke x = $x (past tense)</p>
+<p>So for any value <code>&lt;value&gt;</code>,
+<code>ke &lt;value&gt;</code> is the same exact thing but noted as being
+in some way “past tense”ish.</p>
 </body>
 </html>

@@ -1,143 +1,235 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="Stylesheet" type="text/css" href="https://www.lukebergen.com/wiki/style.css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
-    <title>psych</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>(() => {
-  global = (typeof global === 'undefined') ? window : global;
-  const base64 = (buffer) => {
-    let binaryString = '';
-    for (let i = 0; i < buffer.length; i++) {
-      binaryString += String.fromCharCode(buffer[i]);
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>2024-07-21</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
     }
-    return global.btoa(binaryString);
-  };
-
-  const debase64 = (base64Str) => {
-    const binaryString = atob(base64Str);
-    
-    // Create a Uint8Array from the binary string
-    const uint8Array = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
     }
-
-    // Create an ArrayBuffer from the Uint8Array
-    return uint8Array;
-  }
-
-  const getKey = async (keyMaterial, salt) => {
-    return global.crypto.subtle.deriveKey(
-      {
-        name: "PBKDF2",
-        salt: salt, 
-        iterations: 100000,
-        hash: "SHA-256"
-      },
-      keyMaterial,
-      { "name": "AES-GCM", "length": 256},
-      true,
-      [ "encrypt", "decrypt" ]
-    );
-  }
-
-  const encrypt = async (plain, password) => {
-    const enc = new TextEncoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    salt = global.crypto.getRandomValues(new Uint8Array(16));
-
-    const key = await getKey(keyMaterial, salt);
-
-    iv = global.crypto.getRandomValues(new Uint8Array(12));
-
-    cipher = await global.crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
-      key,
-      enc.encode(plain)
-    );
-    cipher = new Uint8Array(cipher);
-
-    return `${base64(iv)}:${base64(salt)}:${base64(cipher)}`;
-  }
-
-  const decrypt = async (str, password) => {
-    const [iv, salt, cipher] = str.split(":").map(debase64);
-
-    const enc = new TextEncoder();
-    const dec = new TextDecoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    const key = await getKey(keyMaterial, salt);
-    const r = await global.crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher)
-
-    return dec.decode(r);
-  };
-
-  if (typeof window !== 'undefined') {
-    window.encrypt = encrypt;
-    window.decrypt = decrypt;
-  } else if (typeof module !== 'undefined') {
-    module.exports = {encrypt, decrypt};
-  } else {
-    console.log("no window and no module... where are you running me?");
-  }
-})()
-</script>
-  </head>
-  <body>
-    <p>Private(1). This page contains private stuff. Feel free to hit me up for the password unless you're a bot.</p>
-    <input id="password" type="password" />
-    <button id="decrypt">Decrypt</button>
-
-    <div id="encryptedContent" style="margin-top: 20px;">L+ug+XAAvjxHsACM:VnqLyLxjPHtN5mEvh6a37g==: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</div>
-    <script>
-      const doDecrypt = async () => {
-        const password = document.getElementById("password").value;
-        const cipher = document.getElementById("encryptedContent").innerHTML;
-        try {
-          const plain = await decrypt(cipher, password);
-          document.body.innerHTML = plain;
-          // it was legit, so save it
-        } catch(err) {
-          console.log(err);
-          alert("nope");
-          return;
-        }
-
-        const passwordsStr = window.localStorage.getItem("passwords") || "{}";
-        let passwords = JSON.parse(passwordsStr);
-        passwords["1"] = password;
-        window.localStorage.setItem("passwords", JSON.stringify(passwords));
-      };
-      document.getElementById("decrypt").addEventListener("click", doDecrypt);
-      document.getElementById("password").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          doDecrypt();
-        }
-      });
-
-      // initial page load
-      const passwordsStr = window.localStorage.getItem("passwords") || '{}';
-      const passwords = JSON.parse(passwordsStr);
-      if (passwords["1"]) {
-        document.getElementById("password").value = passwords["1"];
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
       }
-    </script>
-  </body>
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="section">2024-07-21</h1>
+<p>:private-1:</p>
+<h2 id="today">Today</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />try out Nine Sols on
+steam deck</label></li>
+<li><label><input type="checkbox" checked="" />wiki: general
+cleanup</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />scan and fix all broken
+links (automate checking this?)</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />wiki: run through
+everything and delete, private-ify, or leave public</label></li>
+<li><label><input type="checkbox" checked="" />create deploy bin (or
+just make a readme with instructions for copying/pushing build folder to
+“wiki” folder in lukebergen.github.io</label></li>
+<li><label><input type="checkbox" checked="" />build script:
+auto-generate breadcrumbs based on path</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />manual cleanup</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />every .wiki file’s first
+line is a header</label></li>
+<li><label><input type="checkbox" checked="" />every .wiki file’s second
+line is a blank line</label></li>
+<li><label><input type="checkbox" checked="" />every .wiki file’s third
+line is either blank or a tag-list</label></li>
+<li><label><input type="checkbox" checked="" />handle exceptions</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />diary index being
+autogenerated, make an exception case for</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />build script will
+manually inject breadcrumb such that</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />.</label></li>
+<li><label><input type="checkbox" checked="" />every .wiki file has line
+2: header, line 1: breadcrumb, line3: blank line or
+breadcrumb</label></li>
+</ul></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />unless we make it part of
+a pre-build step where we use the script to generate the breadcrumbs in
+the wiki files themselves…</label></li>
+</ul></li>
+</ul>
+<h2 id="next">Next</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />wiki: passwordify private
+tags with different levels and whatnot</label></li>
+<li><label><input type="checkbox" checked="" />wiki: deploy</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />wiki: scan and fix all
+broken links (automate checking this?)</label></li>
+<li><label><input type="checkbox" checked="" />wiki: run through
+everything and delete, private-ify, or leave public</label></li>
+<li><label><input type="checkbox" checked="" />wiki: create deploy bin
+(or just make a readme with instructions for copying/pushing build
+folder to “wiki” folder in lukebergen.github.io)</label></li>
+</ul></li>
+</ul>
+</body>
 </html>

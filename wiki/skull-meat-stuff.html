@@ -1,143 +1,289 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="Stylesheet" type="text/css" href="https://www.lukebergen.com/wiki/style.css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
-    <title>psych</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>(() => {
-  global = (typeof global === 'undefined') ? window : global;
-  const base64 = (buffer) => {
-    let binaryString = '';
-    for (let i = 0; i < buffer.length; i++) {
-      binaryString += String.fromCharCode(buffer[i]);
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>skull-meat-stuff</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
     }
-    return global.btoa(binaryString);
-  };
-
-  const debase64 = (base64Str) => {
-    const binaryString = atob(base64Str);
-    
-    // Create a Uint8Array from the binary string
-    const uint8Array = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
     }
-
-    // Create an ArrayBuffer from the Uint8Array
-    return uint8Array;
-  }
-
-  const getKey = async (keyMaterial, salt) => {
-    return global.crypto.subtle.deriveKey(
-      {
-        name: "PBKDF2",
-        salt: salt, 
-        iterations: 100000,
-        hash: "SHA-256"
-      },
-      keyMaterial,
-      { "name": "AES-GCM", "length": 256},
-      true,
-      [ "encrypt", "decrypt" ]
-    );
-  }
-
-  const encrypt = async (plain, password) => {
-    const enc = new TextEncoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    salt = global.crypto.getRandomValues(new Uint8Array(16));
-
-    const key = await getKey(keyMaterial, salt);
-
-    iv = global.crypto.getRandomValues(new Uint8Array(12));
-
-    cipher = await global.crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
-      key,
-      enc.encode(plain)
-    );
-    cipher = new Uint8Array(cipher);
-
-    return `${base64(iv)}:${base64(salt)}:${base64(cipher)}`;
-  }
-
-  const decrypt = async (str, password) => {
-    const [iv, salt, cipher] = str.split(":").map(debase64);
-
-    const enc = new TextEncoder();
-    const dec = new TextDecoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    const key = await getKey(keyMaterial, salt);
-    const r = await global.crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher)
-
-    return dec.decode(r);
-  };
-
-  if (typeof window !== 'undefined') {
-    window.encrypt = encrypt;
-    window.decrypt = decrypt;
-  } else if (typeof module !== 'undefined') {
-    module.exports = {encrypt, decrypt};
-  } else {
-    console.log("no window and no module... where are you running me?");
-  }
-})()
-</script>
-  </head>
-  <body>
-    <p>Private(0). This page contains private stuff. Feel free to hit me up for the password unless you're a bot.</p>
-    <input id="password" type="password" />
-    <button id="decrypt">Decrypt</button>
-
-    <div id="encryptedContent" style="margin-top: 20px;">hQ/8YtJ9O/wPWeFP:lR/SkEvdeSY8E7ryMnIM2g==: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</div>
-    <script>
-      const doDecrypt = async () => {
-        const password = document.getElementById("password").value;
-        const cipher = document.getElementById("encryptedContent").innerHTML;
-        try {
-          const plain = await decrypt(cipher, password);
-          document.body.innerHTML = plain;
-          // it was legit, so save it
-        } catch(err) {
-          console.log(err);
-          alert("nope");
-          return;
-        }
-
-        const passwordsStr = window.localStorage.getItem("passwords") || "{}";
-        let passwords = JSON.parse(passwordsStr);
-        passwords["0"] = password;
-        window.localStorage.setItem("passwords", JSON.stringify(passwords));
-      };
-      document.getElementById("decrypt").addEventListener("click", doDecrypt);
-      document.getElementById("password").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          doDecrypt();
-        }
-      });
-
-      // initial page load
-      const passwordsStr = window.localStorage.getItem("passwords") || '{}';
-      const passwords = JSON.parse(passwordsStr);
-      if (passwords["0"]) {
-        document.getElementById("password").value = passwords["0"];
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
       }
-    </script>
-  </body>
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="skull-meat-stuff">Skull Meat Stuff</h1>
+<p>:private-0:</p>
+<h2 id="scratch-notes-for-next-therapy-session">scratch / notes for next
+therapy session</h2>
+<p>context: during a weeknight. Took some edibles. Craving a drink.
+Feeling that mindset of “yeah… I know all that stuff we’ve thought when
+driving to work in the morning and how you want a nicer body. How we’re
+destroying our body for it when it’s not even really all that great of
+an experience anymore. ALLLLL that jazz. So determine to ‘turn things
+around’”. Definitely gonne have a drink tonight even though I was
+planning not to.</p>
+<p>I know that I don’t <em>really</em> want to do this. So some part of
+me starts trying to argue myself out of it. I think all those same
+thoughts again at myself. “it’s killing you”, “you’re fucking up your
+brain”, “it’s probably making you feel worse with all the
+depression/anxiety stuff”. And to each of these, I (me in the drivers
+seat) have a retort for every one. “I don’t care”. Conversation
+ensures</p>
+<p>A: So what? I know all those things are true. But right now, this is
+what I want. And I want it enough that it’s worth the trade-offs. How
+about for once, I’ll do what I <em>want</em> instead of what I’m worried
+about B: But “trade-offs” is all wrong. These nights of drinking are
+nice, but they don’t offset the time / happiness loss for <em>all the
+rest of the time</em>. You’re being selfish. A: Am I being selfish, or
+are you just not selfish enough? Maybe I am selfish and thoughtless, and
+being short-sighted. So what. I’m not trying to optimize for my own
+happiness like a perfectionist. I’m not thinking, I’m just doing.
+Enjoying what I want, because I can. Even if it is bad for future-me.
+Fuck that guy. I’m the one here right now and I’ll do what I want. If
+you’re so concerned about the outcomes of my actions, put that
+perfectionism to use and mitigate my shit. In the mean time, fuck off B:
+Integration? Don’t we want to find some happy medium here? A: Fuck. Off.
+The medium between your perfectionism and my raw id is still a place
+where we’re “reasonable” 99% of the time. Like being the one person in a
+class of 100 who votes for plain pizza. It’s not that he gets pizza his
+way 1% of the time. He gets outvoted <em>EVERY</em> time. Soooo, fuck
+being out voted. When I get my hands on the wheel, I’ll do things my way
+B: Yeah… this is why you don’t see the light of day much. Because you’re
+selfish and hurt other people (yourself included) for your own
+enjoyment. You put yourself well above others and that makes you a
+fundamentally bad person no matter how you calculate it. So yeah. In a
+very real way, you’re <em>a</em> bad part of me that I try to give as
+little control to as possible. It’s called “trying to be a good person”
+A: So what. I’m like, the villain here. Or a personification of all the
+things you consider “bad”? B: There’s other ways of being bad. You just
+represent one interesting collection of them. Not even really sure how
+much of it is just the drinking either. You seem to embody like, a whole
+weird amalgum of things I consider “bad” (yes, I know that’s reductive).
+Sorry A: Side effect of perfectionism maybe? Parts like me who are
+“failures” or “human” are just so unacceptable, you can’t (or won’t)
+integrate (): what if it’s just a strategy we need. Rather than this
+fighting back and forth or some hamfisted “accepting yourself”, what if
+we did it like a contract. Make concessions of each other. Instead of
+going <em>right</em> to integration, let’s at least first get a little
+friendlier B: Yeah, we’ve tried that remember? That’s why the million
+“ok, I’ll eat lunch, but no drinking” always fail, because when he gets
+his hands on the wheel, every deal under the sun seems to go out the
+window. He can’t be relied upon to hold up his end (): Ok, what if you
+made it so that you hold up your end of things <em>only</em> if he holds
+his up end first. (I won’t eat lunch tomorrow if you drink tonight) B:
+Yeah, have tried that too remember. It’s the closest thing to working
+we’ve had. But I ended up bearing the brunt of it and went deeper into
+perfectionism trying to make up for his nonsense. I can only be so good
+to make up for his selfish bullshit</p>
+<p>How do I be good enough to make up for how bad I am?</p>
+<h2 id="excercises">excercises</h2>
+<h3 id="calm-happy-place">calm happy place</h3>
+<p>At the beach, at night, alone, beach chair, sliver of moon, so not
+too bright</p>
+<h3
+id="what-would-you-tell-yourself-as-a-child-in-those-sad-moments">what
+would you tell yourself as a child in those sad moments?</h3>
+<p>Different things depending on my mood (apparently)</p>
+<h4 id="angerdisgust">anger/disgust</h4>
+<p>Stand up for yourself. You’re right to get angry. It’s your turn.
+Stand up for yourself. Fight. Get angry. It’s your right. God you whiny
+little cry-baby. “ooohh whoa is me. Nobody cares about me. Nobody’s
+protecting me. I’d rather just be sad.” Fuuuuuuck you. Go hork down a
+bunch of food to make yourself feel better you fat little baby. Oooh
+nooooo. He’s crying now. I hurt its feelings. God you probably
+<em>should</em> just crawl away and die. What good is a little doormat
+that only knows how to feel sorry for itself.</p>
+<p>Fuck. Even typing this out and now <em>I’m</em> starting to feel sad.
+Your self-pity germs are contagious. Gross. Gods I hate remembering you
+or interacting with you. It makes me feel like you’ll infect me with
+this… whatever this gross self-indulgent, pity-wallowing, cowardly,
+entitled, childishness is.</p>
+<h4 id="universe-me">universe-me</h4>
+<p>It’s ok bud. I know. It’s sad to feel alone and like they don’t care
+about what you want/need. It’s not their fault. They are what they are.
+Unaware, selfish. Humans are just like that sometimes. But it’s ok.
+We’re more than that. In those moments when you feel alone and sad,
+those are the moments when you start to really feel like your true self.
+Here. Try this. Close your eyes and imagine yourself alone in a field at
+night with the stars and whatnot. Now imagine that everybody on the
+planet is gone. Wiped out by a plague or whatever. It’s just you and the
+stars and the grass. Now imagine yourself not being there and notice how
+still and calm everything is. You are part of that and it is part of
+you. Now take a deeeeeep breath. Feel like you’re breathing in that calm
+stillness and feel how it is part of you and you are part of it. This is
+the real you. You’ll always feel a little bit sad because you are still
+human. But you’re also this. And the peace from this place can help make
+the sadness almost feel sweet too. They’ll never know you or be able to
+understand you. Because they cannot and will not ever be able to
+understand this. In that way, you should feel bad for them. They’ll run
+around with all their human things going on. Live, make more humans,
+die. On and on they’ll go. But you’ll always be here. Like the eye of
+the storm. And they’ll never understand that or you. So it’s ok to be
+yourself here. Just… learn to be human too. It’s what they’ll expect and
+you do still need food and water and stuff to keep your body going and
+whatnot. But don’t forget who you really are. OH! And lean into it too.
+Be as weird as you want. The best people value different perspectives.
+So be your weird little self as much as you like. And the people that
+like that and want to be around it, stick with them. And the ones who
+are put off by it, screw them. They’re the ones who only value sameness
+and conformity and fuck that.</p>
+</body>
 </html>

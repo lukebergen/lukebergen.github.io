@@ -1,143 +1,249 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="Stylesheet" type="text/css" href="https://www.lukebergen.com/wiki/style.css">
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
-    <title>psych</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>(() => {
-  global = (typeof global === 'undefined') ? window : global;
-  const base64 = (buffer) => {
-    let binaryString = '';
-    for (let i = 0; i < buffer.length; i++) {
-      binaryString += String.fromCharCode(buffer[i]);
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>2024-08-03</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
     }
-    return global.btoa(binaryString);
-  };
-
-  const debase64 = (base64Str) => {
-    const binaryString = atob(base64Str);
-    
-    // Create a Uint8Array from the binary string
-    const uint8Array = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      uint8Array[i] = binaryString.charCodeAt(i);
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
     }
-
-    // Create an ArrayBuffer from the Uint8Array
-    return uint8Array;
-  }
-
-  const getKey = async (keyMaterial, salt) => {
-    return global.crypto.subtle.deriveKey(
-      {
-        name: "PBKDF2",
-        salt: salt, 
-        iterations: 100000,
-        hash: "SHA-256"
-      },
-      keyMaterial,
-      { "name": "AES-GCM", "length": 256},
-      true,
-      [ "encrypt", "decrypt" ]
-    );
-  }
-
-  const encrypt = async (plain, password) => {
-    const enc = new TextEncoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    salt = global.crypto.getRandomValues(new Uint8Array(16));
-
-    const key = await getKey(keyMaterial, salt);
-
-    iv = global.crypto.getRandomValues(new Uint8Array(12));
-
-    cipher = await global.crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
-      key,
-      enc.encode(plain)
-    );
-    cipher = new Uint8Array(cipher);
-
-    return `${base64(iv)}:${base64(salt)}:${base64(cipher)}`;
-  }
-
-  const decrypt = async (str, password) => {
-    const [iv, salt, cipher] = str.split(":").map(debase64);
-
-    const enc = new TextEncoder();
-    const dec = new TextDecoder();
-    const keyMaterial = await global.crypto.subtle.importKey(
-      "raw", 
-      enc.encode(password), 
-      {name: "PBKDF2"}, 
-      false, 
-      ["deriveBits", "deriveKey"]
-    );
-
-    const key = await getKey(keyMaterial, salt);
-    const r = await global.crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher)
-
-    return dec.decode(r);
-  };
-
-  if (typeof window !== 'undefined') {
-    window.encrypt = encrypt;
-    window.decrypt = decrypt;
-  } else if (typeof module !== 'undefined') {
-    module.exports = {encrypt, decrypt};
-  } else {
-    console.log("no window and no module... where are you running me?");
-  }
-})()
-</script>
-  </head>
-  <body>
-    <p>Private(1). This page contains private stuff. Feel free to hit me up for the password unless you're a bot.</p>
-    <input id="password" type="password" />
-    <button id="decrypt">Decrypt</button>
-
-    <div id="encryptedContent" style="margin-top: 20px;">ZN8TdADbJ/mEX6m6:A2F9jJXmmj1ecqVFusVENg==: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</div>
-    <script>
-      const doDecrypt = async () => {
-        const password = document.getElementById("password").value;
-        const cipher = document.getElementById("encryptedContent").innerHTML;
-        try {
-          const plain = await decrypt(cipher, password);
-          document.body.innerHTML = plain;
-          // it was legit, so save it
-        } catch(err) {
-          console.log(err);
-          alert("nope");
-          return;
-        }
-
-        const passwordsStr = window.localStorage.getItem("passwords") || "{}";
-        let passwords = JSON.parse(passwordsStr);
-        passwords["1"] = password;
-        window.localStorage.setItem("passwords", JSON.stringify(passwords));
-      };
-      document.getElementById("decrypt").addEventListener("click", doDecrypt);
-      document.getElementById("password").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          doDecrypt();
-        }
-      });
-
-      // initial page load
-      const passwordsStr = window.localStorage.getItem("passwords") || '{}';
-      const passwords = JSON.parse(passwordsStr);
-      if (passwords["1"]) {
-        document.getElementById("password").value = passwords["1"];
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
       }
-    </script>
-  </body>
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="section">2024-08-03</h1>
+<p>:private-1:</p>
+<h2 id="today">Today</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />wiki: (this was actually
+done a few days back) make passwords semi-sticky. Maybe once you enter a
+password for a given level, we pre-set the value in future pages (but
+still show that this required one)</label></li>
+<li><label><input type="checkbox" checked="" />nest: holy gods go
+rewrite most of everything in the nest wiki</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />stop writing like it’s a
+book that you feel bad for making people read</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />yes, make it read
+conversationally, but not like listening to a bad lecture from a “cool”
+professor</label></li>
+</ul></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />wiki: blog</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />wiki: set up folder and
+such, decide how much should be build-automated and what’s just manually
+management</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />wiki: password chunks
+(rather than entire page just because of one chunk being
+secreted)</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />.</label></li>
+<li><label><input type="checkbox" checked="" />maybe extract the
+encrypt/decrypt stuff out into a machine bin and then just use it here
+(neovim replacement for that janky vim-based encrypt/decrypt
+function?)</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />nanoMinions: play with
+idea in godot and see if that would be a good fit</label></li>
+<li><label><input type="checkbox" checked="" />nanoMinions: write down
+idea (<a href="../projects/">projects</a>)?</label></li>
+<li><label><input type="checkbox" checked="" />idea: perplexity.ai cli
+interface (<code>pai</code> maybe)</label></li>
+<li><label><input type="checkbox" checked="" />wiki tweaks (mostly
+Othana stuff)</label></li>
+</ul>
+<h2 id="next">Next</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />nest: holy gods go
+rewrite most of everything in the nest wiki</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />stop writing like it’s a
+book that you feel bad for making people read</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />yes, make it read
+conversationally, but not like listening to a bad lecture from a “cool”
+professor</label></li>
+</ul></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />wiki: blog</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />wiki: set up folder and
+such, decide how much should be build-automated and what’s just manually
+management</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />wiki: password chunks
+(rather than entire page just because of one chunk being
+secreted)</label>
+<ul class="task-list">
+<li><label><input type="checkbox" checked="" />.</label></li>
+<li><label><input type="checkbox" checked="" />maybe extract the
+encrypt/decrypt stuff out into a machine bin and then just use it here
+(neovim replacement for that janky vim-based encrypt/decrypt
+function?)</label></li>
+</ul></li>
+<li><label><input type="checkbox" checked="" />nanoMinions: play with
+idea in godot and see if that would be a good fit</label></li>
+</ul>
+</body>
 </html>
